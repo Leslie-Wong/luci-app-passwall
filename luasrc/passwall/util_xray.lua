@@ -260,6 +260,7 @@ function gen_config_server(node)
             for i = 1, #node.uuid do
                 clients[i] = {
                     id = node.uuid[i],
+                    email = "my@les.com",
                     flow = ("vless" == node.protocol and "1" == node.tls and node.tlsflow) and node.tlsflow or nil
                 }
             end
@@ -394,6 +395,25 @@ function gen_config_server(node)
         end
     end
 
+    local outbound = nil
+    outbound = { 
+        transport = nil,
+        policy = {
+            levels = {
+                [0] = {
+                    handshake = 10,
+                    connIdle = 300,
+                    uplinkOnly = 2,
+                    downlinkOnly = 5,
+                    statsUserUplink = "false",
+                    statsUserUplink = "false",
+                    bufferSize = 10240
+                }
+            }
+        }
+    }
+    table.insert(outbounds, 1, outbound)
+    
     local config = {
         log = {
             -- error = "/tmp/etc/passwall_server/log/" .. user[".name"] .. ".log",
@@ -433,7 +453,7 @@ function gen_config_server(node)
                             }
                         }
                     } or nil,
-                    tcpSettings = (node.transport == "tcp" and "0" == node.reality) and {
+                    tcpSettings = (node.transport == "tcp" and "1" == node.reality) and {
                         acceptProxyProtocol = (node.acceptProxyProtocol and node.acceptProxyProtocol == "1") and true or false,
                         header = {
                             type = node.tcp_guise,
@@ -495,12 +515,8 @@ function gen_config_server(node)
         end
     end
 
-    if "1" == node.tls then
-        if "0" == node.reality then
-            config.inbounds[1].streamSettings.security = "tls"
-        elseif "1" == node.reality then
-            config.inbounds[1].streamSettings.security = "reality"
-        end
+    if "1" == node.tls and "0" == node.reality then
+        config.inbounds[1].streamSettings.security = "tls"
     end
 
     return config
