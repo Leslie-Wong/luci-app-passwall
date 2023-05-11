@@ -355,6 +355,18 @@ uuid:depends("type", "Trojan")
 uuid:depends("type", "Trojan-Go")
 uuid:depends("type", "Trojan-Plus")
 
+email = s:option(DynamicList, "email", translate("email"))
+email:depends({ type = "V2ray", protocol = "vmess" })
+email:depends({ type = "V2ray", protocol = "vless" })
+email:depends({ type = "V2ray", protocol = "trojan" })
+email:depends({ type = "Xray", protocol = "vmess" })
+email:depends({ type = "Xray", protocol = "vless" })
+email:depends({ type = "Xray", protocol = "trojan" })
+email:depends("type", "Trojan")
+email:depends("type", "Trojan-Go")
+email:depends("type", "Trojan-Plus")
+
+
 tls = s:option(Flag, "tls", translate("TLS"))
 tls.default = 0
 tls.validate = function(self, value, t)
@@ -373,6 +385,7 @@ tls.validate = function(self, value, t)
         return value
     end
 end
+
 tls:depends({ type = "V2ray", protocol = "vmess" })
 tls:depends({ type = "V2ray", protocol = "vless" })
 tls:depends({ type = "V2ray", protocol = "socks" })
