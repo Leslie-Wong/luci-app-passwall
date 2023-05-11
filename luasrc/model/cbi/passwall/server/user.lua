@@ -414,9 +414,13 @@ reality_servername = s:option(DynamicList, "reality_servername", translate("serv
 reality_servername.default = ""
 reality_servername:depends({ reality = "Xray", tls = true, reality = true })
 
-reality_privateKey = s:option(Value, "reality_privateKey", translate("privateKey"))
+reality_privateKey = s:option(Value, "reality_privateKey", translate("privateKey"), ":~# /usr/bin/xray x25519")
 reality_privateKey.default = ""
 reality_privateKey:depends({ reality = "Xray", tls = true, reality = true })
+
+reality_publicKey = s:option(Value, "reality_publicKey", translate("publicKey"))
+reality_publicKey.default = ""
+reality_publicKey:depends({ reality = "Xray", tls = true, reality = true })
 
 reality_shortids = s:option(DynamicList, "reality_shortids", translate("shortIds"))
 reality_shortids.default = ""
