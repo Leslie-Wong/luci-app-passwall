@@ -250,6 +250,7 @@ end
 function gen_config_server(node)
     local settings = nil
     local routing = nil
+    local email = nil
     local outbounds = {
         {protocol = "freedom", tag = "direct"}, {protocol = "blackhole", tag = "blocked"}
     }
@@ -258,9 +259,15 @@ function gen_config_server(node)
         if node.uuid then
             local clients = {}
             for i = 1, #node.uuid do
+                email = nil
+                if node.email  then
+                    if node.email[i]  then
+                        email = node.email[i]
+                    end
+                end
                 clients[i] = {
                     id = node.uuid[i],
-                    email = "my@les.com",
+                    email = email,
                     flow = ("vless" == node.protocol and "1" == node.tls and node.tlsflow) and node.tlsflow or nil
                 }
             end
@@ -394,9 +401,8 @@ function gen_config_server(node)
             table.insert(outbounds, 1, outbound)
         end
     end
-
-    local outbound = nil
-    outbound = { 
+    
+    local config = {
         transport = nil,
         policy = {
             levels = {
@@ -405,16 +411,12 @@ function gen_config_server(node)
                     connIdle = 300,
                     uplinkOnly = 2,
                     downlinkOnly = 5,
-                    statsUserUplink = "false",
-                    statsUserUplink = "false",
+                    statsUserUplink = false,
+                    statsUserDownlink = false,
                     bufferSize = 10240
                 }
             }
-        }
-    }
-    table.insert(outbounds, 1, outbound)
-    
-    local config = {
+        },
         log = {
             -- error = "/tmp/etc/passwall_server/log/" .. user[".name"] .. ".log",
             loglevel = ("1" == node.log) and node.loglevel or "none"
